@@ -102,7 +102,7 @@ class _Login extends State<LogIn> {
                         dbHelper.loginPatient(inputEmail, inputPassword);
                     Patient patient =
                         dbHelper.getPatient(inputEmail, inputPassword);
-                    if (response != -1) {
+                    if (response == -1) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -113,8 +113,7 @@ class _Login extends State<LogIn> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                const LogInError(title: '')),
+                            builder: (context) => const LogInError(title: '')),
                       );
                     }
 

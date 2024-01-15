@@ -108,7 +108,7 @@ class _LoginError extends State<LogInError> {
                         dbHelper.loginPatient(inputEmail, inputPassword);
                     Patient patient =
                         dbHelper.getPatient(inputEmail, inputPassword);
-                    if (response != -1) {
+                    if (response == -1) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(

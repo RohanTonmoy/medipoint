@@ -26,29 +26,39 @@ class _SchedulePageState extends State<SchedulePage> {
     _selectedDay = _focusedDay;
   }
 
+  /*List<String> _getEvents(DateTime day) {
+    //get events for day
+    return events[day] ?? [];
+  }
+  */
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Schedule'),
-      ),
-      body: Column(children: [
-        TableCalendar(
-          firstDay: DateTime.utc(2010, 10, 16),
-          lastDay: DateTime.utc(2030, 3, 14),
-          focusedDay: _focusedDay,
-          calendarFormat: _calendarFormat,
-          selectedDayPredicate: (day) {
-            return isSameDay(_selectedDay, day);
-          },
-          onDaySelected: (selectedDay, focusedDay) {
-            if (!isSameDay(_selectedDay, selectedDay)) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text('Your Calendar'),
+        ),
+        body: Column(children: [
+          TableCalendar(
+            headerStyle: HeaderStyle(
+              formatButtonVisible: false,
+            ),
+            firstDay: DateTime.utc(2010, 10, 16),
+            lastDay: DateTime.utc(2030, 3, 14),
+            focusedDay: _focusedDay,
+            calendarFormat: _calendarFormat,
+            selectedDayPredicate: (day) {
+              return isSameDay(_selectedDay, day);
+            },
+            onDaySelected: (selectedDay, focusedDay) {
+              if (!isSameDay(_selectedDay, selectedDay)) {
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay;
+                });
 
-              /*
+                /*
                     Future<void> fetchSchedule(DateTime date) async{
                       final response = await x.get(here we get the individual patient info in the sql database)
                       );
@@ -63,21 +73,30 @@ class _SchedulePageState extends State<SchedulePage> {
                   }
 
                 */
-            }
-          },
-          onPageChanged: (focusedDay) {
-            _focusedDay = focusedDay;
-          },
-        ),
-        Expanded(
-            child: ListView.builder(
-                itemCount: _scheduleDetails.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(_scheduleDetails[index]),
-                  );
-                }))
-      ]),
-    );
+              }
+            },
+            onPageChanged: (focusedDay) {
+              _focusedDay = focusedDay;
+            },
+          ),
+          Expanded(
+              child: ListView.builder(
+                  itemCount: _scheduleDetails.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(_scheduleDetails[index]),
+                    );
+                  }))
+        ]),
+        bottomNavigationBar: BottomNavigationBar(items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "Personal Info",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "Schedule",
+          )
+        ]));
   }
 }
