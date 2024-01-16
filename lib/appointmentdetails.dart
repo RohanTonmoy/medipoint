@@ -1,38 +1,29 @@
-import 'package:flutter/material.dart';
+import 'patient.dart';
 
-class AppointmentDetails extends StatefulWidget {
-  @override
-  _AppointmentDetailsState createState() => _AppointmentDetailsState();
-}
+class Appointment {
+  int? id; //needed?
+  int patient;
+  int startTime;
+  int endTime;
 
-class _AppointmentDetailsState extends State<AppointmentDetails> {
-  List<String> appointments = []; 
+  Appointment(
+      {this.id,
+      required this.patient,
+      required this.startTime,
+      required this.endTime});
 
-  @override
-  void initState() {
-    super.initState();
-    fetchAppointments(); // fetch the appointments from backend
-  }
+  Appointment.fromMap(Map<String, dynamic> res)
+      : id = res["id"],
+        patient = res["patient"],
+        startTime = res['startTime'],
+        endTime = res['endTime'];
 
-  Future<void> fetchAppointments() async {
-    
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Appointment Details'),
-      ),
-      body: ListView.builder(
-        itemCount: appointments.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(appointments[index]),
-            
-          );
-        },
-      ),
-    );
+  Map<String, Object?> toMap() {
+    return {
+      'id': id,
+      'patient': patient,
+      'startTime': startTime,
+      'endTime': endTime
+    };
   }
 }
