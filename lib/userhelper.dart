@@ -25,7 +25,7 @@ class DatabaseHelper {
             CREATE TABLE patients (
               id INTEGER PRIMARY KEY AUTOINCREMENT, 
               name TEXT NOT NULL, 
-              email TEXT NOT NULL,
+              email TEXT NOT NULL UNIQUE,
               password TEXT NOT NULL
             )
           """,
@@ -33,23 +33,20 @@ class DatabaseHelper {
       },
       version: 1,
     );
+    print(path);
   }
 
   Future<int> insertPatient(Patient patient) async {
-   /* this.retrievePatients().then(
+    this.retrievePatients().then(
       (value) {
         value.forEach(
           (element) {
-            if (element.email == patient.email) {
-              return await 0;
-            }
+            if (element.email == patient.email) {}
           },
         );
       },
     );
-    */
-    int result = await db.insert('patients', patient.toMap());
-    return result;
+    return db.insert('patients', patient.toMap());
   }
 
   Future<int> updatePatient(Patient patient) async {
@@ -67,8 +64,6 @@ class DatabaseHelper {
     return queryResult.map((e) => Patient.fromMap(e)).toList();
   }
 
-
-
   Future<void> deletePatient(int id) async {
     await db.delete(
       'patients',
@@ -77,8 +72,8 @@ class DatabaseHelper {
     );
   }
 
-  Patient getPatient(String email, String password){
-    Patient patient = new Patient(name: '', email: '', password:'');
+  Patient getPatient(String email, String password) {
+    Patient patient = new Patient(name: '', email: '', password: '');
     this.retrievePatients().then(
       (value) {
         value.forEach(
@@ -93,7 +88,6 @@ class DatabaseHelper {
     return patient;
   }
 
-  
   int loginPatient(String email, String password) {
     int a = -1;
     this.retrievePatients().then(
@@ -109,4 +103,6 @@ class DatabaseHelper {
     );
     return a;
   }
+
+  
 }
