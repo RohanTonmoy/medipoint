@@ -5,7 +5,7 @@ import 'package:medipoint_new/personalinfo.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'patient.dart';
 import 'package:medipoint_new/login.dart';
-
+List<String> info = ['First', 'Last', 'Month', 'Day', 'Year', 'Description'];
 class SchedulePage extends StatefulWidget {
   final Patient patient;
 
@@ -20,6 +20,7 @@ class _SchedulePageState extends State<SchedulePage> {
   late DateTime _focusedDay;
   late DateTime? _selectedDay;
   int _currentIndex = 1;
+  
 
   List<String> _scheduleDetails = [];
 
@@ -31,17 +32,12 @@ class _SchedulePageState extends State<SchedulePage> {
     _selectedDay = _focusedDay;
   }
 
-  /*List<String> _getEvents(DateTime day) {
-    //get events for day
-    return events[day] ?? [];
-  }
-  */
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Colors.lightBlueAccent,
         title: Text('Your Calendar'),
       ),
       body: Column(
@@ -89,8 +85,20 @@ class _SchedulePageState extends State<SchedulePage> {
             },
           ),
         ),
+        Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 10),
+                      child: Text('Navigate through the calendar and select a date to open Appointment Manager',
+                      style: TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,)
+                    ),
       ]),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.lightBlue,
         currentIndex: _currentIndex,
         onTap: (value) {
           setState(() {
@@ -102,6 +110,7 @@ class _SchedulePageState extends State<SchedulePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: "Personal Info",
+            
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
@@ -125,11 +134,7 @@ class _SchedulePageState extends State<SchedulePage> {
                 builder: (context) => PersonalInfo(patient: widget.patient)));
         break;
       case 1:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => SchedulePage(patient: widget.patient)),
-        );
+        
         break;
       case 2:
         Navigator.pushReplacement(
