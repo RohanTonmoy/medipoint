@@ -34,13 +34,9 @@ class _Login extends State<LogIn> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          backgroundColor: Colors.lightBlueAccent,
           title: Text(
-            widget.title,
-            style: const TextStyle(
-              fontFamily: 'TimesNewRoman',
-              fontSize: 17,
-            ),
+            'Log In',
           ),
         ),
         body: Container(
@@ -73,6 +69,7 @@ class _Login extends State<LogIn> {
                           fillColor: Colors.white,
                           border: OutlineInputBorder(),
                           hintText: 'Email',
+                          filled: true
                           
                         ),
                         onChanged: (value) => inputEmail = value,
@@ -90,15 +87,17 @@ class _Login extends State<LogIn> {
                     ),
                     Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                          EdgeInsets.symmetric(horizontal: 8, vertical: 16, ),
                       child: TextField(
                         decoration: InputDecoration(
                           fillColor: Colors.white,
                           border: OutlineInputBorder(),
                           hintText: 'Password',
+                          filled: true
                         ),
                         onChanged: (value) => inputPassword = value,
                       ),
+                      
                     ),
                     SizedBox(height: 30),
                     ElevatedButton(
