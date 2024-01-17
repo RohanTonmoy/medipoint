@@ -2,28 +2,27 @@ import 'patient.dart';
 
 class Appointment {
   int? id; //needed?
-  int patient;
-  int startTime;
-  int endTime;
+  String startTime;
+  String endTime;
+  String date;
 
   Appointment(
       {this.id,
-      required this.patient,
       required this.startTime,
-      required this.endTime});
+      required this.endTime,
+      required this.date});
 
   Appointment.fromMap(Map<String, dynamic> res)
       : id = res["id"],
-        patient = res["patient"],
         startTime = res['startTime'],
-        endTime = res['endTime'];
+        endTime = res['endTime'],
+        date = res['date'];
 
   Map<String, Object?> toMap() {
-    return {
-      'id': id,
-      'patient': patient,
-      'startTime': startTime,
-      'endTime': endTime
-    };
+    return {'id': id, 'startTime': startTime, 'endTime': endTime, 'date': date};
+  }
+
+  String toString() {
+    return 'From $startTime to $endTime on $date';
   }
 }
