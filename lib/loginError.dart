@@ -45,14 +45,10 @@ class _LoginError extends State<LogInError> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(
-            widget.title,
-            style: const TextStyle(
-              fontFamily: 'TimesNewRoman',
-              fontSize: 17,
-            ),
+          backgroundColor: Colors.lightBlueAccent,
+          title: Text('Log In'
           ),
+          
         ),
         body: Container(
             decoration: BoxDecoration(
@@ -91,6 +87,7 @@ class _LoginError extends State<LogInError> {
                           fillColor: Colors.white,
                           border: OutlineInputBorder(),
                           hintText: 'Email',
+                          filled: true
                           
                         ),
                         onChanged: (value) => inputEmail = value,
@@ -108,15 +105,17 @@ class _LoginError extends State<LogInError> {
                     ),
                     Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                          EdgeInsets.symmetric(horizontal: 8, vertical: 16, ),
                       child: TextField(
                         decoration: InputDecoration(
                           fillColor: Colors.white,
                           border: OutlineInputBorder(),
                           hintText: 'Password',
+                          filled: true
                         ),
                         onChanged: (value) => inputPassword = value,
                       ),
+                      
                     ),
                     SizedBox(height: 30),
                     ElevatedButton(
