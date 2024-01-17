@@ -13,6 +13,7 @@ class PersonalInfo extends StatefulWidget {
 }
 
 class _PersonalInfo extends State<PersonalInfo> {
+  
   String? fname;
   int _currentIndex = 1;
   String? lname;
@@ -31,133 +32,141 @@ class _PersonalInfo extends State<PersonalInfo> {
 
   void changem(String m) {
     widget.patient.changem(m);
+    info[2] = m;
   }
 
   void changed(String d) {
     widget.patient.changed(d);
+    info[3] = d;
   }
 
   void changey(String y) {
     widget.patient.changey(y);
+    info[4] = y;
   }
 
   void changef(String f) {
     widget.patient.changef(f);
+    info[0] = f;
   }
 
   void changel(String l) {
     widget.patient.changel(l);
+    info[1] = l;
   }
 
   void changedesc(String d) {
     widget.patient.changedesc(d);
+    info[5] = d;
   }
 
-  @override
-  void innitState() {
-    innitState1();
-  }
+  // @override
+  // void innitState() {
+  //   innitState1();
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       appBar: AppBar(
+        backgroundColor: Colors.lightBlueAccent,
+        title: Text('Personal Information'),
+      ),
       body: Center(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
             Text('First Name:',
                 style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.black)),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
               child: TextField(
                 decoration: InputDecoration(
                   fillColor: Colors.white,
                   border: OutlineInputBorder(),
-                  hintText: fname,
+                  hintText: info[0],
                 ),
                 onChanged: (text) {
-                  changef(text);
-                  innitState1();
                   changef(text);
                 },
               ),
             ),
             Text('Last Name:',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 20,
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                 )),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
               child: TextField(
                 onChanged: (value) => changel(value),
                 decoration: InputDecoration(
                   fillColor: Colors.white,
                   border: OutlineInputBorder(),
-                  hintText: lname,
+                  hintText: info[1],
                 ),
               ),
             ),
             Text('Month of Birth:',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 20,
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                 )),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
               child: TextField(
                 decoration: InputDecoration(
                   fillColor: Colors.white,
                   border: OutlineInputBorder(),
-                  hintText: month,
+                  hintText: info[2],
                 ),
                 onChanged: (value) {
-                  innitState1();
+                  
                   changem(value);
                 },
               ),
             ),
             Text('Day of Birth:',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 20,
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                 )),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
               child: TextField(
                 decoration: InputDecoration(
                   fillColor: Colors.white,
                   border: OutlineInputBorder(),
-                  hintText: day,
+                  hintText: info[3],
                 ),
                 onChanged: (value) {
-                  innitState1();
+                  
                   changed(value);
                 },
               ),
             ),
             Text('Year of Birth:',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 20,
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                 )),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
               child: TextField(
                 decoration: InputDecoration(
                   fillColor: Colors.white,
                   border: OutlineInputBorder(),
-                  hintText: year,
+                  hintText: info[4],
                 ),
                 onChanged: (value) {
-                  innitState1();
+                  
                   changey(value);
                 },
               ),
@@ -165,38 +174,31 @@ class _PersonalInfo extends State<PersonalInfo> {
             Text(
               'Enter anything significant about your medical health:',
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 14,
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
               child: TextField(
                 decoration: InputDecoration(
                   fillColor: Colors.white,
                   border: OutlineInputBorder(),
-                  hintText: desc,
+                  hintText: info[5],
                 ),
                 onChanged: (value) {
-                  innitState1();
+                  
                   changedesc(value);
-                  innitState1();
+                 
                 },
               ),
             ),
-            Text(
-              '(Enter first name and press on Personal Info to see old info)',
-              style: TextStyle(
-                fontSize: 13,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
+            
           ])),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.lightBlue,
         currentIndex: _currentIndex,
         onTap: (value) {
           setState(() {
@@ -225,10 +227,6 @@ class _PersonalInfo extends State<PersonalInfo> {
   void _navigateToPage(int index, BuildContext context) {
     switch (index) {
       case 0:
-        /*Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PersonalInfo(patient: widget.patient)));*/
         break;
       case 1:
         Navigator.push(
