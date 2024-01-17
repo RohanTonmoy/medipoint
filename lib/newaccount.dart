@@ -29,8 +29,8 @@ class _NewAccount extends State<NewAccount> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
+          backgroundColor: Colors.lightBlueAccent,
+          title: Text('Create New Account'),
         ),
         body: Container(
             decoration: BoxDecoration(
@@ -54,12 +54,13 @@ class _NewAccount extends State<NewAccount> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 10),
                       child: TextField(
-                        onChanged: (value) => userName = value,
-                        textAlign: TextAlign.center,
-                        decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
+          
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(),
                           hintText: 'Name',
-                        ),
+                          filled: true
+                      ),
                       ),
                     ),
                     SizedBox(height: 40),
@@ -73,13 +74,14 @@ class _NewAccount extends State<NewAccount> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 10),
                       child: TextField(
-                        onChanged: (value) => userEmail = value,
-                        textAlign: TextAlign.center,
-                        decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
+          
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(),
                           hintText: 'Email',
-                        ),
+                          filled: true
                       ),
+                      )
                     ),
                     SizedBox(height: 40),
                     Text('Enter your password:',
@@ -93,10 +95,12 @@ class _NewAccount extends State<NewAccount> {
                           horizontal: 8, vertical: 10),
                       child: TextField(
                         onChanged: (value) => userPassword = value,
-                        textAlign: TextAlign.center,
+                        
                         decoration: const InputDecoration(
                             border: UnderlineInputBorder(),
                             hintText: 'Password',
+                            filled: true,
+                            
                             icon: const Padding(
                               padding: const EdgeInsets.only(top: 15.0),
                               child: const Icon(Icons.lock),
@@ -110,14 +114,7 @@ class _NewAccount extends State<NewAccount> {
                             fontSize: 20,
                           )),
                       onPressed: () {
-                        // Patient newPatient = Patient(
-                        //     name: 'sample patient',
-                        //     email: email,
-                        //     password: password);
-                        // dbHelper.retrievePatients().then(
-                        //       (value) => value.forEach((e) => print(e.toMap())),
-                        //     );
-                        if (dbHelper.loginPatient(userEmail, userPassword) !=
+                        if (dbHelper.loginPatient(userEmail, userPassword) ==
                             -1) {
                           Patient newPatient = Patient(
                               name: userName,
