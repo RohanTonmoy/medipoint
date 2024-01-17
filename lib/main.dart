@@ -6,14 +6,12 @@ import 'schedulepage.dart';
 import 'userhelper.dart';
 import 'patient.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppointmentHelper().initDB();
   runApp(MyApp());
   runApp(const MyApp());
 }
-
-
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -57,8 +55,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Welcome User'),
-          backgroundColor: Colors.lightBlue,
+          title: Text('Welcome to Medipoint'),
+          backgroundColor: Colors.lightBlueAccent,
         ),
         body: Container(
           decoration: const BoxDecoration(
