@@ -10,21 +10,15 @@ import 'patient.dart';
 import 'package:medipoint_new/login.dart';
 import 'schedulepage.dart';
 import 'appointmenthelper.dart';
+import 'appointments.dart';
 
 String startApp = '';
 String endApp = '';
-//late AppointmentHelper appHelper;
-int timeToInt(String time, DateTime dateTime) {
-  String firstHalf = time.substring(0, 2);
-  String secondHalf = time.substring(3);
-  DateTime date = DateTime(dateTime.year, dateTime.month, dateTime.day,
-      int.parse(firstHalf), int.parse(secondHalf));
-  return date.millisecondsSinceEpoch;
-}
+late AppointmentHelper dbHelper;
+List<Appointment> appointments = [];
 
 class AppList extends StatefulWidget {
   const AppList({super.key, required this.patient, required this.dateTime});
-
   final Patient patient;
   final DateTime dateTime;
   @override
@@ -32,43 +26,45 @@ class AppList extends StatefulWidget {
 }
 
 class _AppListState extends State<AppList> {
-  late AppointmentHelper dbHelper = AppointmentHelper();
+  late AppointmentHelper dbHelper;
 
   final List<App> _apps = <App>[];
   final TextEditingController _textFieldController = TextEditingController();
   final TextEditingController _textFieldController2 = TextEditingController();
   int _currentIndex = 1;
-  AppointmentHelper appHelper = AppointmentHelper();
 
-  void _addApp(String name, String start) async {
+  void initState() {
+    super.initState();
+    this.dbHelper = AppointmentHelper();
+    this.dbHelper.initDB().whenComplete(() async {
+      setState(() {});
+    });
+  }
+
+  void _addApp(String name, String start, String end) async {
     try {
-      int startEpoch = timeToInt(startApp, widget.dateTime);
-      print("Start Epoch: $startEpoch");
-
-      await appHelper.insertAppointment(widget.patient.id!, startEpoch);
+      String date =
+          "${widget.dateTime.month}/${widget.dateTime.day}/${widget.dateTime.year}";
+      Appointment appointment =
+          Appointment(startTime: start, endTime: end, date: date);
+      dbHelper.insertAppointment(appointment);
+      print('\n\n ${dbHelper.retrieveAppointments()}');
+      appointments.add(appointment);
 
       setState(() {
-        _apps.add(App(name: name, completed: false));
+        _apps.add(App(
+            name: name,
+            start: startApp,
+            end: endApp,
+            date: date,
+            completed: false));
       });
-
       _textFieldController.clear();
       _textFieldController2.clear();
     } catch (e) {
       print("Error making appointment");
     }
   }
-
-/*
-    setState(() {
-       int start = timeToInt(startApp, widget.dateTime);
-       appHelper.insertAppointment(widget.patient.id!, start); //error with widget.patient.id
-       
-      _apps.add(App(name: name, completed: false));
-    });
-    _textFieldController.clear();
-    _textFieldController2.clear();
-  }
-*/
 
   void _handleChange(App appointment) {
     setState(() {
@@ -79,6 +75,7 @@ class _AppListState extends State<AppList> {
   void _deleteApp(App appointment) {
     setState(() {
       _apps.removeWhere((element) => element.name == appointment.name);
+      appointments.removeWhere((element) => element.startTime == appointment.name);
     });
   }
 
@@ -87,6 +84,7 @@ class _AppListState extends State<AppList> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Appointment Manager'),
+        backgroundColor: Colors.lightBlueAccent,
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -99,10 +97,11 @@ class _AppListState extends State<AppList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _displayDialog(),
-        tooltip: 'Add a Todo',
+        tooltip: 'Add an Appointment',
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.lightBlue,
         currentIndex: _currentIndex,
         onTap: (value) {
           setState(() {
@@ -199,7 +198,12 @@ class _AppListState extends State<AppList> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                _addApp(_textFieldController.text, _textFieldController2.text);
+                try {
+                  _addApp(_textFieldController.text, _textFieldController.text,
+                      _textFieldController2.text);
+                } catch (e) {
+                  Navigator.of(context).pop();
+                }
                 print(dbHelper.retrieveAppointments());
               },
               child: const Text('Add'),
@@ -212,9 +216,17 @@ class _AppListState extends State<AppList> {
 }
 
 class App {
-  App({required this.name, required this.completed});
+  App(
+      {required this.name,
+      required this.completed,
+      required this.start,
+      required this.end,
+      required this.date});
   String name;
   bool completed;
+  String start;
+  String end;
+  String date;
 }
 
 class Item extends StatelessWidget {
@@ -261,6 +273,7 @@ class Item extends StatelessWidget {
           alignment: Alignment.centerRight,
           onPressed: () {
             removeApp(app);
+            //delete appointment from database
           },
         ),
       ]),
