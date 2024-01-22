@@ -14,7 +14,7 @@ import 'appointments.dart';
 
 String startApp = '';
 String endApp = '';
-late AppointmentHelper dbHelper;
+late AppointmentHelper apptHelper;
 List<Appointment> appointments = [];
 
 class AppList extends StatefulWidget {
@@ -26,38 +26,38 @@ class AppList extends StatefulWidget {
 }
 
 class _AppListState extends State<AppList> {
-  late AppointmentHelper dbHelper;
+  late AppointmentHelper apptHelper;
 
-  final List<App> _apps = <App>[];
+  final List<Appointment> _apps = <Appointment>[];
   final TextEditingController _textFieldController = TextEditingController();
   final TextEditingController _textFieldController2 = TextEditingController();
   int _currentIndex = 1;
 
   void initState() {
     super.initState();
-    this.dbHelper = AppointmentHelper();
-    this.dbHelper.initDB().whenComplete(() async {
+    this.apptHelper = AppointmentHelper();
+    this.apptHelper.initDB().whenComplete(() async {
       setState(() {});
     });
   }
 
-  void _addApp(String name, String start, String end) async {
+  void _addApp(Patient patient, int startTime) async {
     try {
       String date =
           "${widget.dateTime.month}/${widget.dateTime.day}/${widget.dateTime.year}";
-      Appointment appointment =
-          Appointment(startTime: start, endTime: end, date: date);
-      dbHelper.insertAppointment(appointment);
-      print('\n\n ${dbHelper.retrieveAppointments()}');
+      Appointment appointment = Appointment(
+          patient: patient.id,
+          startTime: startTime,
+          endTime: startTime + AppointmentHelper.appointmentDuration());
+      apptHelper.insertAppointment(patient.id!, startTime);
+      print('\n\n ${apptHelper.retrieveAppointments()}');
       appointments.add(appointment);
 
       setState(() {
-        _apps.add(App(
-            name: name,
-            start: startApp,
-            end: endApp,
-            date: date,
-            completed: false));
+        _apps.add(Appointment(
+            id: patient.id,
+            startTime: startTime,
+            endTime: startTime + AppointmentHelper.appointmentDuration()));
       });
       _textFieldController.clear();
       _textFieldController2.clear();
@@ -66,16 +66,17 @@ class _AppListState extends State<AppList> {
     }
   }
 
-  void _handleChange(App appointment) {
+  void _handleChange(Appointment appointment) {
     setState(() {
       appointment.completed = !appointment.completed;
     });
   }
 
-  void _deleteApp(App appointment) {
+  void _deleteApp(Appointment appointment) {
     setState(() {
       _apps.removeWhere((element) => element.name == appointment.name);
-      appointments.removeWhere((element) => element.startTime == appointment.name);
+      appointments
+          .removeWhere((element) => element.startTime == appointment.name);
     });
   }
 
@@ -88,7 +89,7 @@ class _AppListState extends State<AppList> {
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
-        children: _apps.map((App appointment) {
+        children: _apps.map((Appointment appointment) {
           return Item(
               app: appointment,
               onAppChanged: _handleChange,
@@ -204,7 +205,7 @@ class _AppListState extends State<AppList> {
                 } catch (e) {
                   Navigator.of(context).pop();
                 }
-                print(dbHelper.retrieveAppointments());
+                print(apptHelper.retrieveAppointments());
               },
               child: const Text('Add'),
             ),
@@ -215,27 +216,13 @@ class _AppListState extends State<AppList> {
   }
 }
 
-class App {
-  App(
-      {required this.name,
-      required this.completed,
-      required this.start,
-      required this.end,
-      required this.date});
-  String name;
-  bool completed;
-  String start;
-  String end;
-  String date;
-}
-
 class Item extends StatelessWidget {
   Item({required this.app, required this.onAppChanged, required this.removeApp})
       : super(key: ObjectKey(app));
 
-  final App app;
-  final void Function(App app) onAppChanged;
-  final void Function(App app) removeApp;
+  final Appointment app;
+  final void Function(Appointment app) onAppChanged;
+  final void Function(Appointment app) removeApp;
 
   TextStyle? _getTextStyle(bool checked) {
     if (!checked) return null;

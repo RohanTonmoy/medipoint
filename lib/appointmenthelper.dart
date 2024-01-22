@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'package:path/path.dart';
 import 'main.dart';
@@ -25,9 +24,11 @@ class AppointmentHelper {
           """
             CREATE TABLE appointments (
               id INTEGER PRIMARY KEY AUTOINCREMENT, 
-              startTime TEXT NOT NULL, 
-              endTime TEXT NOT NULL,
-              date TEXT NOT NULL
+              patient INT NOT NULL, 
+              startTime INT NOT NULL,
+              endTime INT NOT NULL,
+              completed INT NOT NULL,
+              FOREIGN KEY(patient) REFERENCES patients(id)
             )
           """,
         );
@@ -38,56 +39,61 @@ class AppointmentHelper {
     print(path);
   }
 
-  Future<int> insertAppointment(Appointment appointment) async {
-    this.retrieveAppointments().then(
-      (value) {
-        value.forEach(
-          (element) {
-            if (element.startTime == element.startTime) {}
-          },
-        );
-      },
-    );
-    return db.insert('appointments', appointment.toMap());
+  int startTime(DateTime date) {
+    DateTime newtime = DateTime(date.year, date.month, date.day, 9);
+    return newtime.millisecondsSinceEpoch;
   }
 
-  Future<int> updatePatient(Appointment appointment) async {
-    int result = await db.update(
-      'appointments',
-      appointment.toMap(),
-      where: "id = ?",
-      whereArgs: [appointment.id],
+  int endTime(DateTime date) {
+    DateTime newTime = DateTime(date.year, date.month, date.day, 17);
+    return newTime.millisecondsSinceEpoch;
+  }
+
+  static int appointmentDuration() {
+    return new Duration(minutes: 30).inMilliseconds;
+  }
+
+  List<Appointment> getAvailableAppointments(DateTime date) {
+    List<Appointment> availableList = [];
+    int start = startTime(date);
+    int end = endTime(date);
+    retrieveAppointments().then(
+      (listOfAppointments) {
+        for (int x = start; x < end; x += appointmentDuration()) {
+          bool apptAvailable = true;
+          for (Appointment y in listOfAppointments) {
+            if (x == y.startTime) {
+              apptAvailable = false;
+            }
+          }
+          if (apptAvailable) {
+            availableList.add(
+              Appointment(
+                  patient: null,
+                  startTime: x,
+                  endTime: x + appointmentDuration()),
+            );
+          }
+        }
+      },
     );
-    return result;
+
+    return availableList;
+  }
+
+  Future<int> insertAppointment(int patient, int startTime) async {
+    Appointment newAppointment = Appointment(
+        patient: patient,
+        startTime: startTime,
+        endTime: startTime + appointmentDuration() - 1);
+    return db.insert('appointments', newAppointment.toMap());
   }
 
   Future<List<Appointment>> retrieveAppointments() async {
     final List<Map<String, Object?>> queryResult =
         await db.query('appointments');
-    return queryResult.map((e) => Appointment.fromMap(e)).toList();
-  }
-
-  Future<void> deleteAppointment(int id) async {
-    await db.delete(
-      'appointments',
-      where: "id = ?",
-      whereArgs: [id],
-    );
-  }
-
-  Future<int> length() async {
-    int i = 0;
-    this.retrieveAppointments().then(
-      (value) {
-        value.forEach(
-          (element) {
-            if (element.startTime == element.startTime) {
-              i++;
-            }
-          },
-        );
-      },
-    );
-    return i;
+    return queryResult
+        .map((e) => Appointment.fromMap(e))
+        .toList(); //change to make sure that only appointments after datetime.now are shown
   }
 }
