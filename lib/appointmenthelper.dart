@@ -67,12 +67,12 @@ class AppointmentHelper {
             }
           }
           if (apptAvailable) {
-            availableList.add(
-              Appointment(
-                  patient: null,
-                  startTime: x,
-                  endTime: x + appointmentDuration()),
-            );
+            availableList.add(Appointment(
+              patient: null,
+              startTime: DateTime.fromMillisecondsSinceEpoch(x),
+              endTime: DateTime.fromMillisecondsSinceEpoch(
+                  x + appointmentDuration()),
+            ));
           }
         }
       },
@@ -84,8 +84,9 @@ class AppointmentHelper {
   Future<int> insertAppointment(int patient, int startTime) async {
     Appointment newAppointment = Appointment(
         patient: patient,
-        startTime: startTime,
-        endTime: startTime + appointmentDuration() - 1);
+        startTime: DateTime.fromMillisecondsSinceEpoch(startTime),
+        endTime: DateTime.fromMillisecondsSinceEpoch(
+            startTime + appointmentDuration() - 1));
     return db.insert('appointments', newAppointment.toMap());
   }
 

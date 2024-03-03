@@ -3,8 +3,8 @@ import 'patient.dart';
 class Appointment {
   int? id; //needed?
   int? patient;
-  int startTime;
-  int endTime;
+  DateTime startTime;
+  DateTime endTime;
 
   Appointment({
     this.id,
@@ -33,8 +33,8 @@ class Appointment {
   // }
 
   String toString() {
-    DateTime startDate = intToDateTime(startTime);
-    DateTime endDate = intToDateTime(endTime);
+    DateTime startDate = startTime;
+    DateTime endDate = endTime;
     return 'From ${startDate.hour}:${startDate.minute} to ${endDate.hour}:${endDate.minute} on ${startDate.month}/${startDate.day}/${startDate.year}';
   }
 

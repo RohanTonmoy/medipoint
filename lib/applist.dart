@@ -12,8 +12,8 @@ import 'schedulepage.dart';
 import 'appointmenthelper.dart';
 import 'appointments.dart';
 
-String startApp = '';
-String endApp = '';
+late int startApp;
+late int endApp;
 late AppointmentHelper apptHelper;
 List<Appointment> appointments = [];
 
@@ -47,8 +47,8 @@ class _AppListState extends State<AppList> {
           "${widget.dateTime.month}/${widget.dateTime.day}/${widget.dateTime.year}";
       Appointment appointment = Appointment(
           patient: patient.id,
-          startTime: startTime,
-          endTime: startTime + AppointmentHelper.appointmentDuration());
+          startTime: DateTime.fromMillisecondsSinceEpoch(startTime),
+          endTime: DateTime.fromMillisecondsSinceEpoch(startTime + AppointmentHelper.appointmentDuration()));
       apptHelper.insertAppointment(patient.id!, startTime);
       print('\n\n ${apptHelper.retrieveAppointments()}');
       appointments.add(appointment);
@@ -56,8 +56,8 @@ class _AppListState extends State<AppList> {
       setState(() {
         _apps.add(Appointment(
             id: patient.id,
-            startTime: startTime,
-            endTime: startTime + AppointmentHelper.appointmentDuration()));
+            startTime: DateTime.fromMillisecondsSinceEpoch(startTime),
+            endTime: DateTime.fromMillisecondsSinceEpoch(startTime + AppointmentHelper.appointmentDuration())));
       });
       _textFieldController.clear();
       _textFieldController2.clear();
@@ -66,17 +66,17 @@ class _AppListState extends State<AppList> {
     }
   }
 
-  void _handleChange(Appointment appointment) {
-    setState(() {
-      appointment.completed = !appointment.completed;
-    });
-  }
+  // void _handleChange(Appointment appointment) {
+  //   setState(() {
+  //     appointment.completed = !appointment.completed;
+  //   });
+  // }
 
   void _deleteApp(Appointment appointment) {
     setState(() {
-      _apps.removeWhere((element) => element.name == appointment.name);
+      _apps.removeWhere((element) => element.startTime == appointment.startTime);
       appointments
-          .removeWhere((element) => element.startTime == appointment.name);
+          .removeWhere((element) => element.startTime == appointment.startTime);
     });
   }
 
@@ -92,12 +92,12 @@ class _AppListState extends State<AppList> {
         children: _apps.map((Appointment appointment) {
           return Item(
               app: appointment,
-              onAppChanged: _handleChange,
+              onAppChanged: {},
               removeApp: _deleteApp);
         }).toList(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _displayDialog(),
+        onPressed: () => _displayDialog(apptHelper),
         tooltip: 'Add an Appointment',
         child: const Icon(Icons.add),
       ),
@@ -153,7 +153,33 @@ class _AppListState extends State<AppList> {
     }
   }
 
-  Future<void> _displayDialog() async {
+
+  Future<void> _displayDialog(AppointmentHelper apptHelper) async {
+    List<Appointment> availableAppointments = apptHelper.getAvailableAppointments(widget.dateTime);
+    List<Widget> availableAppointmentsView = availableAppointments.map((e) {
+      return ElevatedButton(
+        child: Text(e.toString()),
+        onPressed:() => {
+          AlertDialog(title: const Text('AlertDialog Title'),
+            content: const Text('AlertDialog description'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Cancel'),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => {
+                  apptHelper.insertAppointment(widget.patient.id!, e.startTime)
+                  Navigator.pop(context, 'OK')
+                  }, //add appointment to database
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        }
+        );
+      },
+      ).toList();
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -163,53 +189,43 @@ class _AppListState extends State<AppList> {
           content: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text('Enter the start time:'),
-              TextField(
-                controller: _textFieldController,
-                decoration: const InputDecoration(hintText: 'HH:MM'),
-                autofocus: true,
-                onChanged: (value) => startApp = value,
-              ),
-              Text('Enter the end time:'),
-              TextField(
-                controller: _textFieldController2,
-                decoration: const InputDecoration(hintText: 'HH:MM'),
-                autofocus: true,
-                onChanged: (value) => endApp = value,
-              ),
+              ListView(
+                children: availableAppointmentsView,
+              )
+              
             ],
           ),
-          actions: <Widget>[
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-                try {
-                  _addApp(_textFieldController.text, _textFieldController.text,
-                      _textFieldController2.text);
-                } catch (e) {
-                  Navigator.of(context).pop();
-                }
-                print(apptHelper.retrieveAppointments());
-              },
-              child: const Text('Add'),
-            ),
-          ],
+          // actions: <Widget>[
+          //   OutlinedButton(
+          //     style: OutlinedButton.styleFrom(
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(12),
+          //       ),
+          //     ),
+          //     onPressed: () {
+          //       Navigator.of(context).pop();
+          //     },
+          //     child: const Text('Cancel'),
+          //   ),
+          //   ElevatedButton(
+          //     style: ElevatedButton.styleFrom(
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(12),
+          //       ),
+          //     ),
+          //     onPressed: () {
+          //       Navigator.of(context).pop();
+          //       try {
+          //         _addApp(_textFieldController.text, _textFieldController.text,
+          //             _textFieldController2.text);
+          //       } catch (e) {
+          //         Navigator.of(context).pop();
+          //       }
+          //       print(apptHelper.retrieveAppointments());
+          //     },
+          //     child: const Text('Add'),
+          //   ),
+          // ],
         );
       },
     );
