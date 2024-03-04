@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "930344622459",
+    "project_id": "medipoint-90241",
+    "storage_bucket": "medipoint-90241.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:930344622459:android:b4c4aec97b938a45f405de",
+        "android_client_info": {
+          "package_name": "com.example.medipoint"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXTUjFrNnNK9Ek1yqble95fnLg0dfqdgA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

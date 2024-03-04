@@ -3,6 +3,7 @@ import 'userhelper.dart';
 import 'patient.dart';
 import 'schedulepage.dart';
 import 'loginError.dart';
+import 'auth.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({super.key, required this.title});
@@ -15,20 +16,18 @@ class LogIn extends StatefulWidget {
 class _Login extends State<LogIn> {
   String inputEmail = '';
   String inputPassword = '';
+  final _formKey = GlobalKey<FormState>();
 
-  
+  // late DatabaseHelper dbHelper;
 
-  late DatabaseHelper dbHelper;
-
-  @override
-  void initState() {
-    super.initState();
-    dbHelper = DatabaseHelper();
-    dbHelper.initDB().whenComplete(() {
-      setState(() {});
-    });
-  }
-
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   dbHelper = DatabaseHelper();
+  //   dbHelper.initDB().whenComplete(() {
+  //     setState(() {});
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -63,14 +62,13 @@ class _Login extends State<LogIn> {
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: TextField(
-          
+                      child: TextFormField(
+                        key: _formKey,
                         decoration: InputDecoration(
                           fillColor: Colors.white,
                           border: OutlineInputBorder(),
                           hintText: 'Email',
-                          filled: true
-                          
+                          filled: true,
                         ),
                         onChanged: (value) => inputEmail = value,
                       ),
@@ -86,18 +84,19 @@ class _Login extends State<LogIn> {
                       ),
                     ),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 16, ),
-                      child: TextField(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 16,
+                      ),
+                      child: TextFormField(
+                        key: _formKey,
                         decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(),
-                          hintText: 'Password',
-                          filled: true
-                        ),
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(),
+                            hintText: 'Password',
+                            filled: true),
                         onChanged: (value) => inputPassword = value,
                       ),
-                      
                     ),
                     SizedBox(height: 30),
                     ElevatedButton(
@@ -110,26 +109,11 @@ class _Login extends State<LogIn> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      onPressed: () {
-                        print(dbHelper.loginPatient('email', 'password'));
-                        int response =
-                            dbHelper.loginPatient(inputEmail, inputPassword);
-                        Patient patient =
-                            dbHelper.getPatient(inputEmail, inputPassword);
-                        if (response == -1) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    SchedulePage(patient: patient)),
-                          );
-                        } else {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const LogInError(title: '')),
-                          );
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+                          await AuthService().signInWithEmailAndPassword(
+                              inputEmail, inputPassword);
                         }
 
                         //Check to see if credentials match database
